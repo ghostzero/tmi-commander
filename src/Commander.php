@@ -9,23 +9,33 @@ use GhostZero\Tmi\Events\Irc\PrivmsgEvent;
 
 class Commander
 {
+    protected EventHandler $eventHandler;
+
+    protected string $event;
+
     /**
      * @var CommandExecutor[]
      */
-    private array $executors = [];
+    protected array $executors = [];
 
     public function __construct(EventHandler $eventHandler, string $event)
     {
-        $eventHandler->addHandler($event, function (Event $event) {
-            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-            $command = ($data = explode(' ', $event->message))[0];
+        $this->eventHandler = $eventHandler;
+        $this->event = $event;
 
-            if ($executor = $this->executors[$command] ?? null) {
-                $options = new GetOpt(array_map(fn(Option $x) => $x->asGetOptOption(), $executor->getOptions()));
-                $options->process($arguments = array_slice($data, 1));
-                $executor->handle(new CommandOrigins($event, $arguments, $options->getOptions()));
-            }
-        });
+        $eventHandler->addHandler($event, fn(Event $e) => $this->commandHandler($e));
+    }
+
+    protected function commandHandler(Event $event)
+    {
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+        $command = ($data = explode(' ', $event->message))[0];
+
+        if ($executor = $this->executors[$command] ?? null) {
+            $options = new GetOpt(array_map(fn(Option $x) => $x->asGetOptOption(), $executor->getOptions()));
+            $options->process($arguments = array_slice($data, 1));
+            $executor->handle(new CommandOrigins($event, $arguments, $options->getOptions()));
+        }
     }
 
     public static function register(EventHandler $eventHandler, array $commands): Commander

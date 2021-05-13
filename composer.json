@@ -1,0 +1,32 @@
+{
+    "name": "ghostzero/tmi-commander",
+    "description": "PHP Twitch Messaging Interface Command Handler",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "René Preuß",
+            "email": "rene@preuss.io"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "GhostZero\\Tmi\\Commander\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.4|^8.0",
+        "ghostzero/tmi": "dev-master as 2.3",
+        "ulrichsg/getopt-php": "^3.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.3.3"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

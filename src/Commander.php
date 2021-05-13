@@ -5,6 +5,7 @@ namespace GhostZero\Tmi\Commander;
 use GetOpt\GetOpt;
 use GhostZero\Tmi\Events\Event;
 use GhostZero\Tmi\Events\EventHandler;
+use GhostZero\Tmi\Events\Irc\PrivmsgEvent;
 
 class Commander
 {
@@ -25,6 +26,17 @@ class Commander
                 $executor->handle(new CommandOrigins($event, $arguments, $options->getOptions()));
             }
         });
+    }
+
+    public static function register(EventHandler $eventHandler, array $commands): Commander
+    {
+        $commander = new self($eventHandler, PrivmsgEvent::class);
+
+        foreach ($commands as $command => $executor) {
+            $commander->registerCommand($command, $executor);
+        }
+
+        return $commander;
     }
 
     public function registerCommand(string $string, CommandExecutor $executor): void

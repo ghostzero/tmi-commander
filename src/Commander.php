@@ -27,8 +27,13 @@ class Commander
         });
     }
 
-    public function registerCommand(string $string, CommandExecutor $executor)
+    public function registerCommand(string $string, CommandExecutor $executor): void
     {
         $this->executors[$string] = $executor;
+    }
+
+    public function getCommands(): array
+    {
+        return $this->executors;
     }
 }
